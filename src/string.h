@@ -16,6 +16,7 @@ void string_reverse(String *string);
 void string_trim_left(String *string);
 bool string_read_line(String *string, FILE *file);
 bool string_equal_cstr(String *string, const char *cstr);
+bool string_is_path(String *string);
 void string_push(String *string, char ch);
 void string_pop(String *string);
 String string_pop_word(String *input);

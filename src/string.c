@@ -1,6 +1,6 @@
 #include <ctype.h>
-#include <stdbool.h>
 #include <malloc.h>
+#include <stdbool.h>
 
 #include "string.h"
 
@@ -47,30 +47,29 @@ void string_trim_left(String *string) {
 }
 
 bool string_read_line(String *string, FILE *file) {
-    char *buffer = NULL;
-    size_t buffer_capacity = 0;
+	char *buffer = NULL;
+	size_t buffer_capacity = 0;
 
-    if (getline(&buffer, &buffer_capacity, file) == -1) {
-        if (feof(stdin)) {
-            printf("\n");
+	if (getline(&buffer, &buffer_capacity, file) == -1) {
+		if (feof(stdin)) {
+			printf("\n");
 
-            return false;
-        } else {
-            fprintf(stderr, "ysh: could not read a line\n");
+			return false;
+		} else {
+			fprintf(stderr, "ysh: could not read a line\n");
 
-            return false;
-        }
-    }
-        
-    string->values = buffer;
-    string->len = strlen(buffer);
-    string->capacity = buffer_capacity;
+			return false;
+		}
+	}
 
-    string_pop(string); // Pop the '\n'
+	string->values = buffer;
+	string->len = strlen(buffer);
+	string->capacity = buffer_capacity;
 
-    return true;
+	string_pop(string); // Pop the '\n'
+
+	return true;
 }
-
 
 bool string_equal_cstr(String *string, const char *cstr) {
 	if (string->len != strlen(cstr))
@@ -82,6 +81,17 @@ bool string_equal_cstr(String *string, const char *cstr) {
 	}
 
 	return true;
+}
+
+bool string_is_path(String *string) {
+	switch (string->values[0]) {
+	case '.':
+		return true;
+	case '/':
+		return true;
+	}
+
+	return false;
 }
 
 void string_push(String *string, char ch) {
@@ -138,7 +148,7 @@ Strings string_tokenize_words(String *input) {
 		}
 
 		string_push(&word, '\0');
-        word.len--; // Add null termination to the buffer only
+		word.len--; // Add null termination to the buffer only
 
 		strings_push(&words, word);
 	}
