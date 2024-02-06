@@ -1,7 +1,7 @@
 OUT := out
 SRC := src
 
-CFLAGS = -Werror -Wall -Wextra -O2 -lncurses -g
+CFLAGS = -Werror -Wall -Wextra -O2
 
 all: $(OUT) $(OUT)/ysh
 

@@ -1,10 +1,9 @@
-#include <errno.h>
-#include <ncurses.h>
+#include <unistd.h>
 #include <stdbool.h>
-#include <stdlib.h>
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <unistd.h>
+#include <errno.h>
 
 #include "command.h"
 #include "string.h"
@@ -37,22 +36,17 @@ bool command_execute_system(Command *command) {
 	pid_t pid = fork();
 
 	if (pid == -1) {
-		printw("ysh: could not fork\n");
-		refresh();
+		fprintf(stderr, "ysh: could not fork\n");
 	} else if (pid == 0) {
 		if (execvp(raw_args[0], raw_args) < 0) {
 			if (errno == ENOENT || errno == ENOTDIR) {
 				return CR_NOTFOUND;
 			} else {
-				printw("ysh: could not execute command: %m\n");
-				refresh();
+				fprintf(stderr, "ysh: could not execute command: %m\n");
 			}
 		}
 	} else {
 		wait(NULL);
-
-		addch('\n');
-		refresh();
 	}
 
 	free(raw_args);
@@ -62,6 +56,7 @@ bool command_execute_system(Command *command) {
 
 CommandResult command_execute(Command *command) {
 	CommandResult result = command_execute_builtin(command);
+
 	if (result == CR_NOTFOUND)
 		result = command_execute_system(command);
 

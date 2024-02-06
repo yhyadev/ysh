@@ -1,7 +1,6 @@
 #include <ctype.h>
-#include <ncurses.h>
 #include <stdbool.h>
-#include <stdlib.h>
+#include <malloc.h>
 
 #include "string.h"
 
@@ -47,6 +46,32 @@ void string_trim_left(String *string) {
 	string_reverse(string);
 }
 
+bool string_read_line(String *string, FILE *file) {
+    char *buffer = NULL;
+    size_t buffer_capacity = 0;
+
+    if (getline(&buffer, &buffer_capacity, file) == -1) {
+        if (feof(stdin)) {
+            printf("\n");
+
+            return false;
+        } else {
+            fprintf(stderr, "ysh: could not read a line\n");
+
+            return false;
+        }
+    }
+        
+    string->values = buffer;
+    string->len = strlen(buffer);
+    string->capacity = buffer_capacity;
+
+    string_pop(string); // Pop the '\n'
+
+    return true;
+}
+
+
 bool string_equal_cstr(String *string, const char *cstr) {
 	if (string->len != strlen(cstr))
 		return false;
@@ -60,14 +85,14 @@ bool string_equal_cstr(String *string, const char *cstr) {
 }
 
 void string_push(String *string, char ch) {
-	string->values[string->len++] = ch;
-
-	if (string->len == string->capacity) {
+	if (string->len + 1 >= string->capacity) {
 		string->capacity *= 2;
 
 		string->values =
 			realloc(string->values, sizeof(char) * string->capacity);
 	}
+
+	string->values[string->len++] = ch;
 }
 
 void string_pop(String *string) {
@@ -113,6 +138,7 @@ Strings string_tokenize_words(String *input) {
 		}
 
 		string_push(&word, '\0');
+        word.len--; // Add null termination to the buffer only
 
 		strings_push(&words, word);
 	}

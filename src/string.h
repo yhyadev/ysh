@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdio.h>
 #include <stdbool.h>
 #include <stddef.h>
 
@@ -13,6 +14,7 @@ String string_init(void);
 void string_free(String *string);
 void string_reverse(String *string);
 void string_trim_left(String *string);
+bool string_read_line(String *string, FILE *file);
 bool string_equal_cstr(String *string, const char *cstr);
 void string_push(String *string, char ch);
 void string_pop(String *string);

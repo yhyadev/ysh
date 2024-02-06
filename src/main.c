@@ -1,115 +1,44 @@
-#include <ctype.h>
-#include <ncurses.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "command.h"
 #include "string.h"
 
-#define KEY_CTRL_D 4
-#define KEY_CTRL_C 3
-#define KEY_DEL 127
-
-void main_loop(void) {
-	bool typing = false;
-
-	String input = string_init();
-
+int main(void) {
 	while (true) {
-		if (getcury(stdscr) >= LINES - 1) {
-			clear();
-		}
+		printf("$ ");
 
-		if (!typing) {
-			printw("$ ");
-            refresh();
+		String input = string_init();
 
-			typing = true;
+		if (!string_read_line(&input, stdin)) {
+			string_free(&input);
 
-			continue;
-		}
-
-		int input_ch = getch();
-
-		if (input_ch == KEY_CTRL_D) {
 			break;
 		}
 
-		if (input_ch == KEY_CTRL_C) {
-			addch('\n');
-			refresh();
+		string_trim_left(&input);
 
-			string_free(&input);
-			input = string_init();
+		if (input.len > 0) {
+			Command command = command_parse(&input);
 
-			typing = false;
+			CommandResult command_result = command_execute(&command);
 
-			continue;
-		}
-
-		if (input_ch == KEY_DEL) {
-			if (input.len > 0) {
-				string_pop(&input);
-
-				move(getcury(stdscr), getcurx(stdscr) - 1);
-				delch();
-			}
-
-			continue;
-		}
-
-		if (input_ch == '\n') {
-			addch('\n');
-			refresh();
-
-			string_trim_left(&input);
-
-			if (input.len > 0) {
-				Command command = command_parse(&input);
-
-				CommandResult command_result = command_execute(&command);
-
-				if (command_result == CR_NOTFOUND) {
-					printw("ysh: command not found: %s\n",
-						   command.args.values[0].values);
-					refresh();
-				} else if (command_result == CR_EXIT) {
-					command_free(&command);
-
-					break;
-				};
-
+			if (command_result == CR_NOTFOUND) {
+				fprintf(stderr, "ysh: command not found: %s\n",
+						command.args.values[0].values);
+			} else if (command_result == CR_EXIT) {
 				command_free(&command);
-			}
+				string_free(&input);
 
-			string_free(&input);
-			input = string_init();
+				break;
+			};
 
-			typing = false;
-
-			continue;
+			command_free(&command);
 		}
 
-		if (isprint(input_ch)) {
-			string_push(&input, input_ch);
+		string_free(&input);
 
-			addch(input_ch);
-			refresh();
-		}
 	}
-
-	string_free(&input);
-}
-
-int main(void) {
-	initscr();
-
-	raw();
-
-	noecho();
-
-	main_loop();
-
-	endwin();
 
 	return 0;
 }
