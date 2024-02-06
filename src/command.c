@@ -2,7 +2,6 @@
 #include <ncurses.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -19,13 +18,13 @@ Command command_parse(String *input) {
 void command_free(Command *command) { strings_free(&command->args); }
 
 CommandResult command_execute_builtin(Command *command) {
-	if (strcmp(command->args.values[0].values, "cd") == 0) {
+	if (string_equal_cstr(&command->args.values[0], "cd")) {
 		if (command->args.len > 1) {
 			chdir(command->args.values[1].values);
 		}
 
 		return CR_OK;
-	} else if (strcmp(command->args.values[0].values, "exit") == 0) {
+	} else if (string_equal_cstr(&command->args.values[0], "exit")) {
 		return CR_EXIT;
 	}
 

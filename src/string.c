@@ -47,6 +47,18 @@ void string_trim_left(String *string) {
 	string_reverse(string);
 }
 
+bool string_equal_cstr(String *string, const char *cstr) {
+	if (string->len != strlen(cstr))
+		return false;
+
+	for (size_t i = 0; i < string->len; i++) {
+		if (string->values[i] != cstr[i])
+			return false;
+	}
+
+	return true;
+}
+
 void string_push(String *string, char ch) {
 	string->values[string->len++] = ch;
 
