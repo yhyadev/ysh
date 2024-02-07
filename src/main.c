@@ -37,7 +37,6 @@ int main(void) {
 		}
 
 		string_free(&input);
-
 	}
 
 	return 0;

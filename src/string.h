@@ -1,8 +1,8 @@
 #pragma once
 
-#include <stdio.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdio.h>
 
 typedef struct {
 	char *values;

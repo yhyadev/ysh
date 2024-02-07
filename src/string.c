@@ -87,11 +87,12 @@ bool string_equal_cstr(String *string, const char *cstr) {
 }
 
 bool string_contains(String *string, char ch) {
-    for (size_t i = 0; i < string->len; i++) {
-        if (string->values[i] == ch) return true;
-    }
-    
-    return false;
+	for (size_t i = 0; i < string->len; i++) {
+		if (string->values[i] == ch)
+			return true;
+	}
+
+	return false;
 }
 
 bool string_is_dir(String *string) {
@@ -104,13 +105,13 @@ bool string_is_dir(String *string) {
 }
 
 bool string_is_path(String *string) {
-    if (string->values[0] == '.') return true;
-    if (string_contains(string, '/')) return true;
+	if (string->values[0] == '.')
+		return true;
+	if (string_contains(string, '/'))
+		return true;
 
 	return false;
 }
-
-
 
 void string_push(String *string, char ch) {
 	if (string->len + 1 >= string->capacity) {
