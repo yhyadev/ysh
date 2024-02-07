@@ -1,9 +1,9 @@
-#include <unistd.h>
+#include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <errno.h>
+#include <unistd.h>
 
 #include "command.h"
 #include "string.h"
@@ -55,23 +55,20 @@ bool command_execute_system(Command *command) {
 }
 
 CommandResult command_execute_teleport(Command *command) {
-    if (access(command->args.values[0].values, F_OK) == 0) {
-        chdir(command->args.values[0].values);
+	chdir(command->args.values[0].values);
 
-        return CR_OK;
-    }
-
-    return CR_NOTFOUND;
+	return CR_OK;
 }
 
 CommandResult command_execute(Command *command) {
 	CommandResult result = command_execute_builtin(command);
 
-	if (result == CR_NOTFOUND && !string_is_path(&command->args.values[0]))
-		result = command_execute_system(command);
-	
-    if (result == CR_NOTFOUND)
+	if (result == CR_NOTFOUND && (string_is_dir(&command->args.values[0]) &&
+								  string_is_path(&command->args.values[0])))
 		result = command_execute_teleport(command);
+
+	if (result == CR_NOTFOUND)
+		result = command_execute_system(command);
 
 	return result;
 }

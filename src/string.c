@@ -1,6 +1,9 @@
 #include <ctype.h>
 #include <malloc.h>
 #include <stdbool.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "string.h"
 
@@ -83,16 +86,31 @@ bool string_equal_cstr(String *string, const char *cstr) {
 	return true;
 }
 
+bool string_contains(String *string, char ch) {
+    for (size_t i = 0; i < string->len; i++) {
+        if (string->values[i] == ch) return true;
+    }
+    
+    return false;
+}
+
+bool string_is_dir(String *string) {
+	struct stat path_stat;
+
+	if (stat(string->values, &path_stat) == -1)
+		return false;
+
+	return S_ISDIR(path_stat.st_mode);
+}
+
 bool string_is_path(String *string) {
-	switch (string->values[0]) {
-	case '.':
-		return true;
-	case '/':
-		return true;
-	}
+    if (string->values[0] == '.') return true;
+    if (string_contains(string, '/')) return true;
 
 	return false;
 }
+
+
 
 void string_push(String *string, char ch) {
 	if (string->len + 1 >= string->capacity) {
