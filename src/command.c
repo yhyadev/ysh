@@ -8,6 +8,8 @@
 #include "command.h"
 #include "string.h"
 
+extern void exit(int);
+
 Command command_parse(String *input) {
 	Strings args = string_tokenize_words(input);
 
@@ -30,7 +32,9 @@ CommandResult command_execute_builtin(Command *command) {
 	return CR_NOTFOUND;
 }
 
-bool command_execute_system(Command *command) {
+CommandResult command_execute_system(Command *command) {
+	CommandResult result = CR_OK;
+
 	char **raw_args = strings_to_raw(&command->args);
 
 	pid_t pid = fork();
@@ -43,6 +47,7 @@ bool command_execute_system(Command *command) {
 				return CR_NOTFOUND;
 			} else {
 				fprintf(stderr, "ysh: could not execute command: %m\n");
+                exit(0);
 			}
 		}
 	} else {
@@ -51,7 +56,7 @@ bool command_execute_system(Command *command) {
 
 	free(raw_args);
 
-	return CR_OK;
+	return result;
 }
 
 CommandResult command_execute_teleport(Command *command) {

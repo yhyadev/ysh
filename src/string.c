@@ -6,7 +6,10 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+/* clang-format off */
+#include <readline/history.h>
 #include <readline/readline.h>
+/* clang-format on */
 
 #include "string.h"
 
@@ -52,14 +55,14 @@ void string_trim_left(String *string) {
 	string_reverse(string);
 }
 
-bool string_read_line(String *string) {
+bool string_readline(String *string) {
 	char *buffer = readline("$ ");
 
-    if (buffer == NULL) {
-        fprintf(stderr, "ysh: could not read line");
+	if (buffer == NULL) {
+		return false;
+	}
 
-        return false;
-    }
+    add_history(buffer);
 
 	string->values = buffer;
 	string->len = strlen(buffer);
