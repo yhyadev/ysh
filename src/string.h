@@ -14,7 +14,7 @@ String string_init(void);
 void string_free(String *string);
 void string_reverse(String *string);
 void string_trim_left(String *string);
-bool string_read_line(String *string, FILE *file);
+bool string_read_line(String *string);
 bool string_equal_cstr(String *string, const char *cstr);
 bool string_contains(String *string, char ch);
 bool string_is_dir(String *string);

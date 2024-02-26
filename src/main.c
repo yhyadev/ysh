@@ -4,13 +4,13 @@
 #include "command.h"
 #include "string.h"
 
+extern void exit(int);
+
 int main(void) {
 	while (true) {
-		printf("$ ");
-
 		String input = string_init();
 
-		if (!string_read_line(&input, stdin)) {
+		if (!string_read_line(&input)) {
 			string_free(&input);
 
 			break;
@@ -28,9 +28,10 @@ int main(void) {
 						command.args.values[0].values);
 			} else if (command_result == CR_EXIT) {
 				command_free(&command);
+
 				string_free(&input);
 
-				break;
+				exit(0);
 			};
 
 			command_free(&command);

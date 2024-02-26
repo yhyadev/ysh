@@ -1,9 +1,12 @@
 #include <ctype.h>
 #include <malloc.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <readline/readline.h>
 
 #include "string.h"
 
@@ -49,27 +52,18 @@ void string_trim_left(String *string) {
 	string_reverse(string);
 }
 
-bool string_read_line(String *string, FILE *file) {
-	char *buffer = NULL;
-	size_t buffer_capacity = 0;
+bool string_read_line(String *string) {
+	char *buffer = readline("$ ");
 
-	if (getline(&buffer, &buffer_capacity, file) == -1) {
-		if (feof(stdin)) {
-			printf("\n");
+    if (buffer == NULL) {
+        fprintf(stderr, "ysh: could not read line");
 
-			return false;
-		} else {
-			fprintf(stderr, "ysh: could not read a line\n");
-
-			return false;
-		}
-	}
+        return false;
+    }
 
 	string->values = buffer;
 	string->len = strlen(buffer);
-	string->capacity = buffer_capacity;
-
-	string_pop(string); // Pop the '\n'
+	string->capacity = strlen(buffer);
 
 	return true;
 }
