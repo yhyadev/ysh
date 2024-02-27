@@ -1,1 +1,1 @@
-__noreturn void exit(int status);
+void exit(int status);

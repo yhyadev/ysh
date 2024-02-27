@@ -1,14 +1,13 @@
+#include "stdexit.h"
 #include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include "stdexit.h"
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
 #include "command.h"
 #include "string.h"
-
 
 Command command_parse(String *input) {
 	Strings args = string_tokenize_words(input);
@@ -47,7 +46,7 @@ CommandResult command_execute_system(Command *command) {
 				return CR_NOTFOUND;
 			} else {
 				fprintf(stderr, "ysh: could not execute command: %m\n");
-                exit(0);
+				exit(0);
 			}
 		}
 	} else {

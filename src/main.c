@@ -1,7 +1,7 @@
+#include "stdexit.h"
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include "stdexit.h"
 /* clang-format off */
 #include <readline/history.h>
 #include <readline/readline.h>
@@ -46,7 +46,7 @@ int main(void) {
 				command_free(&command);
 				string_free(&input);
 
-				exit(0); // We are in a child process not a parent process 
+				exit(0); // We are in a child process not a parent process
 			} else if (command_result == CR_EXIT) {
 				command_free(&command);
 				string_free(&input);

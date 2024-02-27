@@ -62,7 +62,7 @@ bool string_readline(String *string) {
 		return false;
 	}
 
-    add_history(buffer);
+	add_history(buffer);
 
 	string->values = buffer;
 	string->len = strlen(buffer);
