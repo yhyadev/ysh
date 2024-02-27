@@ -1,6 +1,7 @@
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include "stdexit.h"
 /* clang-format off */
 #include <readline/history.h>
 #include <readline/readline.h>
@@ -8,8 +9,6 @@
 
 #include "command.h"
 #include "string.h"
-
-extern void exit(int);
 
 void signal_handler(int status) {
 	(void)status;

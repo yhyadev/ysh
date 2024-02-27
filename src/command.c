@@ -1,6 +1,7 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include "stdexit.h"
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -8,7 +9,6 @@
 #include "command.h"
 #include "string.h"
 
-extern void exit(int);
 
 Command command_parse(String *input) {
 	Strings args = string_tokenize_words(input);
